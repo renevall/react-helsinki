@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 
-import Search from "../components/Search";
-import PersonForm from "../components/PersonForm";
-import Persons from "../components/Persons";
+import personService from "./services/persons";
+
+import Search from "./components/Search";
+import PersonForm from "./components/PersonForm";
+import Persons from "./components/Persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -13,14 +14,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
 
   useEffect(() => {
-    console.log("effect");
-    axios.get("http://localhost:3001/persons").then((response) => {
-      console.log("promise fulfilled");
-      setPersons(response.data);
-    });
+    personService.getAll().then((initialPersons) => setPersons(initialPersons));
   }, []);
-
-  console.log("render", persons.length, "persons");
 
   const onNameChange = (event) => {
     console.log(event.target.value);
@@ -57,9 +52,28 @@ const App = () => {
       alert(`${newName} is already added to phonebook`);
       return;
     }
-    setPersons(persons.concat(personObject));
-    setNewName("");
-    setNewNumber("");
+
+    personService.create(personObject).then((returnedPerson) => {
+      setPersons(persons.concat(returnedPerson));
+      setNewName("");
+      setNewNumber("");
+    });
+  };
+
+  const deletePerson = (id) => {
+    const person = persons.find((person) => person.id === id);
+    const result = window.confirm(`Delete ${person.name}?`);
+    if (result) {
+      personService
+        .remove(id)
+        .then(() => {
+          setPersons(persons.filter((person) => person.id !== id));
+        })
+        .catch(() => {
+          alert(`the person '${person.name}' was already deleted from server`);
+          setPersons(persons.filter((p) => p.id !== id));
+        });
+    }
   };
 
   const personsToShow =
