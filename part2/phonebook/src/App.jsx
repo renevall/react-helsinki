@@ -93,7 +93,7 @@ const App = () => {
         newNumber={newNumber}
         onNumberChange={onNumberChange}
       />
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} onDelete={deletePerson} />
     </div>
   );
 };
