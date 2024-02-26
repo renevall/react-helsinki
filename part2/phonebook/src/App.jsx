@@ -12,6 +12,7 @@ const App = () => {
   const [searchName, setSearchName] = useState("");
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
@@ -37,7 +38,6 @@ const App = () => {
     const personObject = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
     };
     if (newName === "") {
       alert("Name cannot be empty");
@@ -55,6 +55,10 @@ const App = () => {
 
     personService.create(personObject).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson));
+      setNotification(`Added ${newName}`);
+      setTimeout(() => {
+        setNotification(null);
+      }, 5000);
       setNewName("");
       setNewNumber("");
     });
@@ -68,6 +72,10 @@ const App = () => {
         .remove(id)
         .then(() => {
           setPersons(persons.filter((person) => person.id !== id));
+          setNotification(`Deleted ${person.name}`);
+          setTimeout(() => {
+            setNotification(null);
+          }, 5000);
         })
         .catch(() => {
           alert(`the person '${person.name}' was already deleted from server`);
@@ -85,7 +93,11 @@ const App = () => {
 
   return (
     <div>
-      <Search searchName={searchName} onSearchChange={onSearchChange} />
+      <Search
+        searchName={searchName}
+        onSearchChange={onSearchChange}
+        notificationMessage={notification}
+      />
       <PersonForm
         addPerson={addPerson}
         newName={newName}
