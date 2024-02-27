@@ -48,12 +48,46 @@ const App = () => {
       return;
     }
 
-    if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
+    let operation = "Added";
+
+    const foundPerson = persons.find((person) => person.name === newName);
+    if (foundPerson !== undefined) {
+      operation = "";
+      const result = window.confirm(
+        `${newName} is already added to phonebook, replace old number with new one?`
+      );
+
+      if (result) {
+        operation = "Updated";
+      }
+    }
+
+    if (operation === "") {
+      return;
+    }
+
+    if (operation === "Updated") {
+      console.log("Updating person");
+      personService
+        .update(foundPerson.id, personObject)
+        .then((returnedPerson) => {
+          setPersons(
+            persons.map((person) =>
+              person.id !== returnedPerson.id ? person : returnedPerson
+            )
+          );
+          setNotification(`Updated ${newName}`);
+          setTimeout(() => {
+            setNotification(null);
+          }, 5000);
+          setNewName("");
+          setNewNumber("");
+        });
       return;
     }
 
     personService.create(personObject).then((returnedPerson) => {
+      console.log("Adding person");
       setPersons(persons.concat(returnedPerson));
       setNotification(`Added ${newName}`);
       setTimeout(() => {
