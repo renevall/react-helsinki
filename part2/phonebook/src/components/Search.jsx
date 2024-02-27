@@ -1,10 +1,15 @@
 import Notification from "./Notification";
 
-const Search = ({searchName, onSearchChange, notificationMessage}) => {
+const Search = ({
+  searchName,
+  onSearchChange,
+  notificationMessage,
+  notificationKind,
+}) => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notificationMessage} />
+      <Notification message={notificationMessage} kind={notificationKind} />
       <div>
         filter shown with:{" "}
         <input value={searchName} onChange={onSearchChange} />
