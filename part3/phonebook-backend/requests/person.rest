@@ -1,0 +1,17 @@
+### List all persons
+
+GET http://localhost:3001/api/persons
+
+### Add a person to the server
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Roberto Griesemer",
+  "number": "032-123456"
+}
+
+### Delete a person from the server
+
+DELETE http://localhost:3001/api/persons/2
+
