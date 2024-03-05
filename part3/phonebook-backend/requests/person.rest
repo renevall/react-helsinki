@@ -2,6 +2,10 @@
 
 GET http://localhost:3001/api/persons
 
+### List all persons in production
+
+GET https://phonebook-react-rene.fly.dev/api/persons
+
 ### Add a person to the server
 POST http://localhost:3001/api/persons
 Content-Type: application/json
